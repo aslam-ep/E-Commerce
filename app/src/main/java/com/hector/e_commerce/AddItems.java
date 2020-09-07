@@ -5,20 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,8 +21,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -134,11 +129,11 @@ public class AddItems extends AppCompatActivity {
                                     public void onFailure(@NonNull Exception e) {
                                         addItemProgressBar.setVisibility(View.INVISIBLE);
                                         addItemLayout.setVisibility(View.VISIBLE);
-                                        Toast.makeText(getApplicationContext(), "Check Your Internet Connection!", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(findViewById(android.R.id.content), "Check Your Internet Connection!", Snackbar.LENGTH_SHORT).show();
                                     }
                                 });
                     } else
-                        Toast.makeText(getApplicationContext(), "Check Your Internet Connection!", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(android.R.id.content), "Check Your Internet Connection!", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -162,10 +157,10 @@ public class AddItems extends AppCompatActivity {
                     IMAGE_COUNT = 1;
                     ImageList.add(data.getData());
                 }else{
-                    Toast.makeText(AddItems.this, "Choose Image", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Choose At Least One Image", Snackbar.LENGTH_SHORT).show();
                 }
             }else{
-                Toast.makeText(AddItems.this, "Choose Image", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), "Choose At Least One Image", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -193,7 +188,7 @@ public class AddItems extends AppCompatActivity {
             return false;
         }
         else if(IMAGE_COUNT == 0){
-            Toast.makeText(AddItems.this, "Minimum One Image Required", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Minimum One Image Required", Snackbar.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -241,11 +236,9 @@ public class AddItems extends AppCompatActivity {
                             //                                @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 // Image upload successfully
-                                Log.d(TAG, "Image "+ finalI +" added." );
-
                                 if(finalI == IMAGE_COUNT){
-                                    Toast.makeText(AddItems.this, "Product Added Successfully", Toast.LENGTH_SHORT).show();
                                     toHome();
+                                    Toast.makeText(AddItems.this, "Product Added Successfully", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
@@ -256,8 +249,7 @@ public class AddItems extends AppCompatActivity {
                                 // Error, Image not uploaded
                                 addItemProgressBar.setVisibility(View.INVISIBLE);
                                 addItemLayout.setVisibility(View.VISIBLE);
-                                Log.d(TAG, "Error : "+e);
-                                Toast.makeText(getApplicationContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(android.R.id.content), "Check Your Connection!", Snackbar.LENGTH_SHORT).show();
                             }
                         });
             }

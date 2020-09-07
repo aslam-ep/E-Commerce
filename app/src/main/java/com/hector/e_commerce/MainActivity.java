@@ -18,12 +18,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }else{
-                            Log.d(TAG, "Connection Error");
+                            textView.setText("Check Your Connection!");
                             textView.setVisibility(View.VISIBLE);
                             homeProgress.setVisibility(View.INVISIBLE);
                         }
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Press Back Again", Toast.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(android.R.id.content), "Press Back Again", Snackbar.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 

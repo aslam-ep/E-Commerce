@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -120,13 +119,13 @@ public class BargainAcceptor extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     bargainPopUp.dismiss();
                                     readData();
-                                    Snackbar.make(findViewById(android.R.id.content), "Responded Successfully", Snackbar.LENGTH_LONG).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Responded Successfully", Snackbar.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     progressBar.setVisibility(View.INVISIBLE);
-                                    Snackbar.make(findViewById(android.R.id.content), "Check Your Connection!", Snackbar.LENGTH_LONG).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Check Your Connection!", Snackbar.LENGTH_SHORT).show();
                                 }
                             });
                         }
