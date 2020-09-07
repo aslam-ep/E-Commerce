@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/bargainProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="@android:color/black"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/bargainProductQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quantity"
+        android:textSize="16dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="2dp"
+        android:layout_below="@id/bargainProductName"/>
+
+    <TextView
+        android:id="@+id/bargainCurrentPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Price"
+        android:textSize="16dp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/bargainRequestedPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Requested Price"
+        android:textSize="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/bargainProductName"/>
+
+</RelativeLayout>
