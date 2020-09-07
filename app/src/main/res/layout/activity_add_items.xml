@@ -23,7 +23,7 @@
         android:layout_below="@id/addItemsProgressBar"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/acme"
-        android:text="Posting Your Add..."
+        android:text="Posting Your AD..."
         android:textColor="@color/colorPrimary"
         android:visibility="invisible"
         android:textSize="16dp"/>
