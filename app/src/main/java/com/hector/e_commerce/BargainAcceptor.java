@@ -44,7 +44,7 @@ public class BargainAcceptor extends AppCompatActivity {
     // Layout elements
     ListView listView;
     ProgressBar progressBar;
-    TextView noData;
+    TextView noData, loadingText;
 
     // Popup
     Dialog bargainPopUp;
@@ -62,6 +62,7 @@ public class BargainAcceptor extends AppCompatActivity {
         listView = findViewById(R.id.bargainList);
         progressBar = findViewById(R.id.bargainProgress);
         noData = findViewById(R.id.bargainNoData);
+        loadingText = findViewById(R.id.bargainLoadingText);
 
         bargainPopUp = new Dialog(BargainAcceptor.this);
 
@@ -108,7 +109,9 @@ public class BargainAcceptor extends AppCompatActivity {
                         if(acceptedPrice.isEmpty())
                             accept_price.setError("Accepted Price Required");
                         else{
+                            loadingText.setText("Responding...");
                             progressBar.setVisibility(View.VISIBLE);
+                            loadingText.setVisibility(View.VISIBLE);
                             db.collection("Bargain").document((products.get(position)).getBargainId())
                                 .update(
                                   "acceptedPrice",acceptedPrice,
@@ -124,6 +127,7 @@ public class BargainAcceptor extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    loadingText.setVisibility(View.INVISIBLE);
                                     progressBar.setVisibility(View.INVISIBLE);
                                     Snackbar.make(findViewById(android.R.id.content), "Check Your Connection!", Snackbar.LENGTH_SHORT).show();
                                 }
@@ -140,6 +144,7 @@ public class BargainAcceptor extends AppCompatActivity {
     }
 
     private void readData() {
+        loadingText.setText("Loading Bargain List...");
         listView.setAdapter(null);
         db.collection("Bargain").whereEqualTo("vendorID", userId).whereEqualTo("isResponded",false)
                 .get()
@@ -164,6 +169,7 @@ public class BargainAcceptor extends AppCompatActivity {
                                         BargainProductAdapter bargainProductAdapter = new BargainProductAdapter((ArrayList<BargainProduct>) products, BargainAcceptor.this);
                                         listView.setAdapter(bargainProductAdapter);
 
+                                        loadingText.setVisibility(View.INVISIBLE);
                                         progressBar.setVisibility(View.INVISIBLE);
                                         listView.setVisibility(View.VISIBLE);
                                     }
@@ -184,6 +190,7 @@ public class BargainAcceptor extends AppCompatActivity {
     }
 
     private void whenFailed() {
+        loadingText.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         noData.setVisibility(View.VISIBLE);
     }

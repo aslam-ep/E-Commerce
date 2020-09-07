@@ -3,20 +3,25 @@ package com.hector.e_commerce;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.Button;
 
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,6 +36,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddItems extends AppCompatActivity {
@@ -39,6 +45,10 @@ public class AddItems extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private int IMAGE_COUNT = 0;
     private ArrayList<Uri> ImageList = new ArrayList<Uri>();
+    private List<String> fileNameList;
+    private List<String> fileDoneList;
+    private UploadListAdapter uploadListAdapter;
+
 
     // Debug tag
     private String TAG = "E-Commerce";
@@ -48,6 +58,8 @@ public class AddItems extends AppCompatActivity {
     ProgressBar addItemProgressBar;
     TextInputEditText name, company, spec, details, item_quantity, price;
     Button chooseImage, postAd;
+    RecyclerView imageSelected;
+    TextView loadingText;
 
     // Image upload instances
     FirebaseStorage storage;
@@ -69,6 +81,7 @@ public class AddItems extends AppCompatActivity {
         // Pointing the variables
         addItemLayout = findViewById(R.id.addItemsLayout);
         addItemProgressBar = findViewById(R.id.addItemsProgressBar);
+        loadingText = findViewById(R.id.addItemLoadingText);
 
         name = findViewById(R.id.itemName);
         company = findViewById(R.id.itemCompany);
@@ -77,6 +90,7 @@ public class AddItems extends AppCompatActivity {
         item_quantity = findViewById(R.id.itemQuantity);
         price = findViewById(R.id.itemPrice);
 
+        imageSelected = findViewById(R.id.imageSelected);
         chooseImage = findViewById(R.id.itemImageButton);
         postAd = findViewById(R.id.itemPostButton);
 
@@ -85,10 +99,22 @@ public class AddItems extends AppCompatActivity {
         storageReference = storage.getReference();
         db = FirebaseFirestore.getInstance();
 
+        fileNameList = new ArrayList<>();
+        fileDoneList = new ArrayList<>();
+
+        //RecyclerView
+        imageSelected.setLayoutManager(new LinearLayoutManager(this));
+        imageSelected.setHasFixedSize(true);
+
+
         //Button on click listeners
         chooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ImageList.clear();
+                fileNameList.clear();
+                fileDoneList.clear();
+
                 selectImage();
             }
         });
@@ -115,6 +141,7 @@ public class AddItems extends AppCompatActivity {
                         // Hiding the form and displaying the progress bar
                         addItemLayout.setVisibility(View.INVISIBLE);
                         addItemProgressBar.setVisibility(View.VISIBLE);
+                        loadingText.setVisibility(View.VISIBLE);
 
                         db.collection("Products")
                                 .add(item)
@@ -127,6 +154,7 @@ public class AddItems extends AppCompatActivity {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        loadingText.setVisibility(View.INVISIBLE);
                                         addItemProgressBar.setVisibility(View.INVISIBLE);
                                         addItemLayout.setVisibility(View.VISIBLE);
                                         Snackbar.make(findViewById(android.R.id.content), "Check Your Internet Connection!", Snackbar.LENGTH_SHORT).show();
@@ -148,14 +176,26 @@ public class AddItems extends AppCompatActivity {
                 if(data.getClipData() != null){
                     IMAGE_COUNT = Math.min(4,data.getClipData().getItemCount());
 
+
                     for (int i = 0; i < IMAGE_COUNT; i++){
                         Uri filePath = data.getClipData().getItemAt(i).getUri();
                         ImageList.add(filePath);
+                        String fileName = getFileName(filePath);
+
+                        fileNameList.add(fileName);
+                        fileDoneList.add("uploading");
                     }
+                    uploadListAdapter = new UploadListAdapter(fileNameList, fileDoneList);
+                    imageSelected.setAdapter(uploadListAdapter);
 
                 }else if(data.getData() != null){
                     IMAGE_COUNT = 1;
                     ImageList.add(data.getData());
+                    fileNameList.add(getFileName(data.getData()));
+                    fileDoneList.add("uploading");
+
+                    uploadListAdapter = new UploadListAdapter(fileNameList, fileDoneList);
+                    imageSelected.setAdapter(uploadListAdapter);
                 }else{
                     Snackbar.make(findViewById(android.R.id.content), "Choose At Least One Image", Snackbar.LENGTH_SHORT).show();
                 }
@@ -214,6 +254,7 @@ public class AddItems extends AppCompatActivity {
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        imageSelected.removeAllViewsInLayout();
     }
 
     // Our Async class
@@ -247,6 +288,7 @@ public class AddItems extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Error, Image not uploaded
+                                loadingText.setVisibility(View.INVISIBLE);
                                 addItemProgressBar.setVisibility(View.INVISIBLE);
                                 addItemLayout.setVisibility(View.VISIBLE);
                                 Snackbar.make(findViewById(android.R.id.content), "Check Your Connection!", Snackbar.LENGTH_SHORT).show();
@@ -256,6 +298,29 @@ public class AddItems extends AppCompatActivity {
             return null;
         }
     }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         toHome();

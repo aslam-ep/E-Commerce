@@ -14,6 +14,16 @@
         android:layout_gravity="center"
         android:layout_centerInParent="true" />
     <TextView
+        android:id="@+id/homeLoadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="90dp"
+        android:fontFamily="@font/acme"
+        android:text="Loading Your Product's..."
+        android:textColor="@color/colorPrimary"
+        android:textSize="16dp"/>
+    <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

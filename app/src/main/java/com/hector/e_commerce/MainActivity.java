@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout homeLayout;
     TextView textView;
     RecyclerView recyclerView;
+    TextView loadingText;
 
     // Firebase instances
     FirebaseFirestore db;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         // Pointing UI elements
         addItem = findViewById(R.id.addItem);
         homeProgress = findViewById(R.id.homeProgress);
+        loadingText = findViewById(R.id.homeLoadingText);
         homeLayout = findViewById(R.id.homeLayout);
         textView = findViewById(R.id.textView);
         recyclerView = findViewById(R.id.recyclerView);
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d(TAG, "No Data Available");
                                 textView.setVisibility(View.VISIBLE);
                                 homeProgress.setVisibility(View.INVISIBLE);
+                                loadingText.setVisibility(View.INVISIBLE);
                             }else{
                                 for(QueryDocumentSnapshot document:task.getResult()) {
 
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                             textView.setText("Check Your Connection!");
                             textView.setVisibility(View.VISIBLE);
                             homeProgress.setVisibility(View.INVISIBLE);
+                            loadingText.setVisibility(View.INVISIBLE);
                         }
                     }
                 });
@@ -150,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                             productAdapter = new ProductAdapter(getApplicationContext(), productList);
                             recyclerView.setAdapter(productAdapter);
                             homeProgress.setVisibility(View.INVISIBLE);
+                            loadingText.setVisibility(View.INVISIBLE);
                             homeLayout.setVisibility(View.VISIBLE);
                         }
                     });

@@ -23,6 +23,18 @@
         android:layout_gravity="center"
         android:layout_centerInParent="true" />
 
+    <TextView
+        android:id="@+id/bargainLoadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/bargainProgress"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/acme"
+        android:text="Loading Bargain List..."
+        android:textColor="@color/colorPrimary"
+        android:textSize="16dp"/>
+
     <ListView
         android:id="@+id/bargainList"
         android:layout_width="match_parent"

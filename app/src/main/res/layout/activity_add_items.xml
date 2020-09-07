@@ -15,6 +15,18 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/addItemLoadingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/addItemsProgressBar"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/acme"
+        android:text="Posting Your Add..."
+        android:textColor="@color/colorPrimary"
+        android:visibility="invisible"
+        android:textSize="16dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,15 +35,15 @@
         <LinearLayout
             android:id="@+id/addItemsLayout"
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:layout_centerHorizontal="true"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
@@ -115,7 +127,14 @@
                     android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="4dp"
+                android:id="@+id/imageSelected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <com.google.android.material.button.MaterialButton
+                android:layout_marginTop="4dp"
                 android:id="@+id/itemImageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,6 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:text="POST AD"
                 app:icon="@drawable/ic_baseline_post_add_24"
                 app:iconGravity="textStart"/>
