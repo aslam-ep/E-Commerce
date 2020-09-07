@@ -1,7 +1,6 @@
 package com.hector.e_commerce;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +38,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Product p = productList.get(position);
 
         holder.name.setText(p.getName());
-        holder.spec.setText(p.getSpec());
+        holder.brand.setText(p.getBrand());
         holder.price.setText(p.getPrice());
+        holder.quantity.setText("Quantity : "+ p.getQuantity());
 
-//        holder.img.setImageBitmap(p.getBitmap());
         Glide.with(cx)
                 .load(p.getImgURL())
                 .fitCenter()
@@ -58,14 +57,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     class ProductViewHolder extends RecyclerView.ViewHolder{
-        TextView name,spec,price;
+        TextView name,brand, quantity, price;
         ImageView img;
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.productName);
-            spec = itemView.findViewById(R.id.productSpec);
+            brand = itemView.findViewById(R.id.productBrand);
             price = itemView.findViewById(R.id.productPrice);
+            quantity = itemView.findViewById(R.id.productQuantity);
 
             img = itemView.findViewById(R.id.imageView);
         }

@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,12 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     String TAG = "E-Commerce-MainActivity";
     boolean doubleBackToExitPressedOnce = false;
     String userId="123456";
-    String url,name, spec, price, pid;
+    String url,name, brand, quantity, price, pid;
     List<Product> productList;
     ProductAdapter productAdapter;
 
@@ -63,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_baseline_shopping_cart_24);
 
@@ -93,11 +90,12 @@ public class MainActivity extends AppCompatActivity {
                                 for(QueryDocumentSnapshot document:task.getResult()) {
 
                                     name = document.getString("Name");
-                                    spec = document.getString("Specification");
+                                    brand = document.getString("Company");
+                                    quantity = document.getString("Quantity");
                                     price = document.getString("Price");
                                     pid = document.getId();
 
-                                    new ImageReader(name,spec,price,pid).execute();
+                                    new ImageReader(name, brand, quantity, price, pid).execute();
 
                                 }
                             }
@@ -121,11 +119,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ImageReader extends AsyncTask{
-        String name,spec,price, pid;
+        String name, brand, quantity, price, pid;
 
-        public ImageReader(String name, String spec, String price, String pid) {
+        public ImageReader(String name, String brand, String quantity, String price, String pid) {
             this.name = name;
-            this.spec = spec;
+            this.brand = brand;
+            this.quantity = quantity;
             this.price = price;
             this.pid = pid;
         }
@@ -138,12 +137,13 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
 
-                            Log.d(TAG, name + spec + price );
+                            Log.d(TAG, name + brand + price );
 
                             url = String.valueOf(uri);
                             productList.add(new Product(
                                     name,
-                                    spec,
+                                    brand,
+                                    quantity,
                                     price + " INR",
                                     url
                             ));
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             //logout action
             case R.id.item1:
-                Toast.makeText(MainActivity.this, "Under Production", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, BargainAcceptor.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

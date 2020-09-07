@@ -3,21 +3,26 @@ package com.hector.e_commerce;
 import android.graphics.Bitmap;
 
 public class Product {
-    private String name,spec,price, imgURL;
+    private String name,brand,price, imgURL, quantity;
 
-    public Product(String name, String spec, String price, String imgURL) {
+    public Product(String name, String brand, String quantity, String price, String imgURL) {
         this.name = name;
-        this.spec = spec;
+        this.brand = brand;
         this.price = price;
         this.imgURL = imgURL;
+        this.quantity = quantity;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getSpec() {
-        return spec;
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getQuantity() {
+        return quantity;
     }
 
     public String getPrice() {

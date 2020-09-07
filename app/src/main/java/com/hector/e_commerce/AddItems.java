@@ -51,7 +51,7 @@ public class AddItems extends AppCompatActivity {
     // UI elements
     LinearLayout addItemLayout;
     ProgressBar addItemProgressBar;
-    TextInputEditText name, spec, details, price;
+    TextInputEditText name, company, spec, details, item_quantity, price;
     Button chooseImage, postAd;
 
     // Image upload instances
@@ -76,8 +76,10 @@ public class AddItems extends AppCompatActivity {
         addItemProgressBar = findViewById(R.id.addItemsProgressBar);
 
         name = findViewById(R.id.itemName);
+        company = findViewById(R.id.itemCompany);
         spec = findViewById(R.id.itemSpec);
         details = findViewById(R.id.itemDetails);
+        item_quantity = findViewById(R.id.itemQuantity);
         price = findViewById(R.id.itemPrice);
 
         chooseImage = findViewById(R.id.itemImageButton);
@@ -106,8 +108,10 @@ public class AddItems extends AppCompatActivity {
                     item = new HashMap<>();
                     item.put("VendorID", userId);
                     item.put("Name", name.getText().toString());
+                    item.put("Company",company.getText().toString());
                     item.put("Specification", spec.getText().toString());
                     item.put("Details", details.getText().toString());
+                    item.put("Quantity",item_quantity.getText().toString());
                     item.put("Price", price.getText().toString());
                     item.put("ImageCount", String.valueOf(IMAGE_COUNT));
 
@@ -135,8 +139,6 @@ public class AddItems extends AppCompatActivity {
                                 });
                     } else
                         Toast.makeText(getApplicationContext(), "Check Your Internet Connection!", Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.d(TAG, "Button Click");
                 }
             }
         });
@@ -170,24 +172,31 @@ public class AddItems extends AppCompatActivity {
 
     // Data check
     private boolean dataCheck(){
-        boolean result = true;
         if((name.getText().toString()).isEmpty()) {
             name.setError("Name Required");
-            result = false;
+            return false;
+        }
+        else if(company.getText().toString().isEmpty()){
+            company.setError("Brand name Required");
+            return false;
         }
         else if(spec.getText().toString().isEmpty()){
             spec.setError("Specification Required");
-            result = false;
+            return false;
+        }
+        else if(item_quantity.getText().toString().isEmpty()){
+            item_quantity.setError("Item Count Required");
+            return false;
         }
         else if(price.getText().toString().isEmpty()){
             price.setError("Price Required");
-            result = false;
+            return false;
         }
         else if(IMAGE_COUNT == 0){
             Toast.makeText(AddItems.this, "Minimum One Image Required", Toast.LENGTH_SHORT).show();
-            result = false;
+            return false;
         }
-        return result;
+        return true;
     }
 
     // Network check
@@ -233,6 +242,11 @@ public class AddItems extends AppCompatActivity {
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 // Image upload successfully
                                 Log.d(TAG, "Image "+ finalI +" added." );
+
+                                if(finalI == IMAGE_COUNT){
+                                    Toast.makeText(AddItems.this, "Product Added Successfully", Toast.LENGTH_SHORT).show();
+                                    toHome();
+                                }
                             }
                         })
 
@@ -248,18 +262,6 @@ public class AddItems extends AppCompatActivity {
                         });
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(AddItems.this, "Product Added Successfully", Toast.LENGTH_SHORT).show();
-                    toHome();
-                }
-            },10000);
         }
     }
     @Override
